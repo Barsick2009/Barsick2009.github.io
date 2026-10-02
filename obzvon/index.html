@@ -1,0 +1,136 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Обзвон детейлингов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: одна колонка-«пульт»: сводка воронки сверху, под ней фильтры и карточки студий (2 колонки на ПК) */
+:root{
+  --bg:#f2f4f1; --surface:#ffffff; --surface2:#f7f8f6; --ink:#17201c; --muted:#5b6862; --line:#dde2dc;
+  --accent:#1d6b58; --accent-ink:#ffffff; --money:#a8681a;
+  --s-new:#6b756f; --s-noanswer:#b26a12; --s-callback:#2a63b8; --s-sent:#1d6b58; --s-thinking:#7a4bb3; --s-sold:#1e8a3e; --s-no:#b23b3b;
+  --display:"Onest",system-ui,sans-serif; --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1412; --surface:#171e1b; --surface2:#1d2622; --ink:#e7eeea; --muted:#94a39c; --line:#28322e;
+  --accent:#4cbf9d; --accent-ink:#0b1310; --money:#e2ab52;
+  --s-new:#8d9792; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1412; --surface:#171e1b; --surface2:#1d2622; --ink:#e7eeea; --muted:#94a39c; --line:#28322e;
+  --accent:#4cbf9d; --accent-ink:#0b1310; --money:#e2ab52;
+  --s-new:#8d9792; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);margin:0}
+.wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+h1{font:800 26px/1.15 var(--display);margin:0;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--muted);font-size:13.5px;margin-top:4px}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* сводка */
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.kpi{background:var(--surface);padding:12px 14px;min-width:0}
+.kpi b{display:block;font:700 22px/1.1 var(--mono);font-variant-numeric:tabular-nums}
+.kpi span{display:block;font-size:12px;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+.kpi.money b{color:var(--money)}
+.funnel{display:flex;height:8px;border-radius:99px;overflow:hidden;background:var(--line);margin:10px 0 18px}
+.funnel i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12.5px;color:var(--muted);margin:-8px 0 16px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;flex:none}
+
+/* фильтры */
+.tools{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;display:grid;gap:8px;margin-bottom:8px}
+.search{display:flex;gap:8px}
+.search input{flex:1;min-width:0;padding:10px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:7px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);font-size:13px;font-weight:600;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip .n{font-family:var(--mono);font-size:12px;opacity:.75}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;border-radius:10px;font-weight:600;font-size:13.5px;border:1px solid var(--line);background:var(--surface2);color:var(--ink);text-decoration:none;white-space:nowrap}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.ghost{background:transparent}
+
+/* шпаргалка */
+details.cheat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 16px;margin-bottom:16px}
+details.cheat summary{cursor:pointer;font-weight:700}
+.cheat ol{margin:10px 0 6px;padding-left:20px;display:grid;gap:6px}
+.cheat .obj{display:grid;gap:6px;margin-top:10px}
+.cheat .obj div{background:var(--surface2);border-radius:10px;padding:8px 12px;font-size:14px}
+.cheat .obj b{display:block;font-size:12.5px;color:var(--muted);font-weight:600}
+
+/* карточки */
+.list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;display:grid;gap:10px;min-width:0;border-left:4px solid var(--sc)}
+.c-top{display:flex;gap:10px;align-items:flex-start}
+.rank{font:700 12px/1 var(--mono);color:var(--muted);padding-top:5px;min-width:22px}
+.c-name{font-weight:700;font-size:16px;line-height:1.25}
+.c-meta{font-size:13px;color:var(--muted);margin-top:2px}
+.c-meta .star{color:var(--money);font-weight:700}
+.pill{margin-left:auto;flex:none;font-size:12px;font-weight:700;padding:4px 10px;border-radius:99px;color:var(--sc);background:color-mix(in srgb,var(--sc) 13%,transparent);white-space:nowrap}
+.phone{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.phone .num{font-size:17px;font-weight:700;user-select:all;letter-spacing:.01em}
+.links{display:flex;flex-wrap:wrap;gap:6px}
+.acts{display:flex;flex-wrap:wrap;gap:6px}
+.res{display:grid;gap:8px;background:var(--surface2);border-radius:12px;padding:10px}
+.res .row{display:flex;flex-wrap:wrap;gap:6px}
+.res .r{border-color:color-mix(in srgb,var(--sc) 45%,var(--line));color:var(--sc)}
+.form{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.form input[type=date],.form input[type=number]{padding:7px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface);min-width:0}
+.form label{display:inline-flex;gap:6px;align-items:center;font-size:13.5px}
+textarea.notes{width:100%;min-height:40px;resize:vertical;padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface2);font-size:14px}
+.foot{font-size:12.5px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 12px}
+.foot .due{color:var(--s-callback);font-weight:700}
+.foot .late{color:var(--s-no);font-weight:700}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 16px;background:var(--surface);border:1px dashed var(--line);border-radius:var(--r)}
+.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s;z-index:20}
+.toast.on{transform:translate(-50%,0)}
+@media (max-width:820px){.list{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (prefers-reduced-motion:reduce){.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.toast{transition:none}}
+</style></head><body>
+
+<form class="login" id="login" hidden><h1 style="font-size:22px">Обзвон</h1><div class="sub">Вход — та же почта и пароль, что в кабинет студии</div><input id="lEmail" type="email" placeholder="Почта" autocomplete="username" required><input id="lPass" type="password" placeholder="Пароль" autocomplete="current-password" required><div class="err" id="lErr"></div><button class="btn pri">Войти</button></form><div class="wrap" id="app" hidden>
+  <div class="head">
+    <div><h1>Обзвон детейлингов</h1><div class="sub">Ростов-на-Дону · студии без онлайн-записи · <span id="today"></span></div></div><div class="sub"><span id="who"></span> · <button class="btn ghost" id="logout" type="button">Выйти</button></div>
+  </div>
+
+  <div class="kpis" id="kpis">
+    <div class="kpi"><b class="num" id="k-called">—</b><span>Обзвонено</span></div>
+    <div class="kpi"><b class="num" id="k-answered">—</b><span>Дозвонился</span></div>
+    <div class="kpi"><b class="num" id="k-link">—</b><span>Взяли ссылку</span></div>
+    <div class="kpi"><b class="num" id="k-sold">—</b><span>Купили</span></div>
+    <div class="kpi money"><b class="num" id="k-revenue">—</b><span>Выручка, ₽</span></div>
+    <div class="kpi money"><b class="num" id="k-monthly">—</b><span>В месяц, ₽</span></div>
+  </div>
+  <div class="funnel" id="funnel" aria-hidden="true"></div>
+  <div class="legend" id="legend"></div>
+
+  <details class="cheat">
+    <summary>Шпаргалка для звонка</summary>
+    <ol>
+      <li>«Добрый день! Это [имя]. Вы владелец [название]?»</li>
+      <li>«Я делаю онлайн-запись для детейлингов Ростова и уже собрал приложение для [название]: ваши услуги, адрес, рейтинг из 2ГИС».</li>
+      <li>«Клиент записывается сам, даже когда вы в боксе, а запись сразу приходит вам в Telegram».</li>
+      <li>«Можно скину ссылку в WhatsApp? Посмотрите за минуту».</li>
+    </ol>
+    <div class="obj">
+      <div><b>«У нас всё по телефону»</b>«А когда вы с машиной и не берёте трубку, клиент звонит следующей студии. Приложение записывает за вас».</div>
+      <div><b>«Дорого»</b>«Запуск 3 500, дальше 790 в месяц. Первый месяц можно бесплатно — посмотрите, идут ли записи».</div>
+      <div><b>«Нет времени»</b>«Скину ссылку — гляньте, когда будет минута. Наберу послезавтра?»</div>
+    </div>
+  </details>
+
+  <div class="tools">
+    <div class="search"><input id="q" type="search" placeholder="Поиск по названию, адресу, телефону" autocomplete="off"></div>
+    <div class="chips" id="chips"></div>
+  </div>
+
+  <div class="list" id="list"><div class="empty" id="empty">Загружаем студии…</div></div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><script src="crm.js"></script></body></html>
