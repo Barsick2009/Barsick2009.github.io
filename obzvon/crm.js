@@ -162,12 +162,13 @@ function msgBlock(l) {
     <div class="m-h">${first ? 'Написать вместо звонка' : 'Напомнить о себе'}</div>
     <div class="row">
       ${wa ? `<a class="btn pri" href="https://wa.me/${wa}?text=${encodeURIComponent(text)}" target="_blank" rel="noopener" data-a="${first ? 'waFirst' : 'waRemind'}" data-id="${l.id}">WhatsApp с текстом</a>` : ''}
+      <button class="btn pri" data-a="${first ? 'maxFirst' : 'maxRemind'}" data-id="${l.id}">MAX: текст + открыть</button>
       <button class="btn" data-a="cpFirst" data-id="${l.id}">Скопировать первое</button>
       <button class="btn" data-a="cpRemind" data-id="${l.id}">Скопировать напоминание</button>
       <button class="btn ghost" data-a="cpPrice" data-id="${l.id}">Про цену</button>
       ${l.tg ? `<a class="btn ghost" href="${esc(l.tg)}" target="_blank" rel="noopener">Открыть Telegram</a>` : ''}
     </div>
-    <div class="small-note">${wa ? 'WhatsApp откроется с готовым текстом — нажмите «Отправить». ' : ''}Для Telegram и MAX: скопируйте, откройте чат, вставьте.</div>
+    <div class="small-note">${wa ? 'WhatsApp откроется с готовым текстом — нажмите «Отправить». ' : ''}MAX: текст скопируется сам и откроется MAX — найдите студию по номеру и вставьте (Ctrl+V). Telegram: скопируйте и вставьте в чат.</div>
   </div>`;
 }
 async function markWritten(l, text) {
@@ -225,6 +226,12 @@ async function act(id, a) {
   const l = leads.find((x) => x.id === id); if (!l) return;
   if (a === 'copyPhone') return copy(l.phone, 'Номер скопирован');
   if (a === 'copyOwner') return copy(l.ownerPhone, 'Номер владельца скопирован');
+  if (a === 'maxFirst' || a === 'maxRemind') {   // у MAX нет ссылки «чат по номеру с текстом» — копируем текст и открываем веб-версию
+    const first = a === 'maxFirst';
+    await copy(first ? MSG.first(l) : MSG.remind(l), `Текст скопирован. В MAX найдите ${l.phone || 'студию'} и вставьте`);
+    window.open('https://web.max.ru/', 'boxapp-max');
+    return markWritten(l, first ? 'написал в MAX' : 'напомнил в MAX');
+  }
   if (a === 'cpFirst') { await copy(MSG.first(l), 'Первое сообщение скопировано — вставьте в чат'); return markWritten(l, 'написал (первое сообщение)'); }
   if (a === 'cpRemind') { await copy(MSG.remind(l), 'Напоминание скопировано'); return markWritten(l, 'написал напоминание'); }
   if (a === 'cpPrice') return copy(MSG.price(l), 'Текст про цену скопирован');
