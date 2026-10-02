@@ -189,8 +189,22 @@ function renderSettings() {
     <h2 class="sec">Отзывы</h2>
     <div id="revAdmin"></div>
     <h2 class="sec">Ссылка на приложение</h2>
-    <div class="card"><div class="small muted">Закрепите в шапке профиля ВК/Telegram/2ГИС и в описании Яндекс Карт</div><div class="row" style="margin-top:8px"><input readonly value="${esc(app)}" id="appLink"><button class="btn" id="copyLink">Копировать</button></div></div>`;
+    <div class="card"><div class="small muted">Закрепите в шапке профиля ВК/Telegram/2ГИС и в описании Яндекс Карт</div><div class="row" style="margin-top:8px"><input readonly value="${esc(app)}" id="appLink"><button class="btn" id="copyLink">Копировать</button></div></div>
+    ${HAS_DB ? `<h2 class="sec">Пароль от кабинета</h2>
+    <form class="card" id="passForm" style="display:grid;gap:10px">
+      <input id="p1" type="password" placeholder="Новый пароль (не короче 8 символов)" autocomplete="new-password" minlength="8" required>
+      <input id="p2" type="password" placeholder="Повторите пароль" autocomplete="new-password" minlength="8" required>
+      <div class="err" id="pErr"></div>
+      <button class="btn primary">Сменить пароль</button>
+    </form>` : ''}`;
   renderPhotos(); renderTg(); renderBA(); renderRevAdmin();
+  if ($('passForm')) $('passForm').onsubmit = async (e) => {
+    e.preventDefault(); $('pErr').textContent = '';
+    const a = $('p1').value, b = $('p2').value;
+    if (a.length < 8) return ($('pErr').textContent = 'Пароль должен быть не короче 8 символов');
+    if (a !== b) return ($('pErr').textContent = 'Пароли не совпадают');
+    try { await store.changePassword(a); e.target.reset(); toast('Пароль изменён — запомните его'); } catch (err) { $('pErr').textContent = err.message; }
+  };
   $('rateForm').onsubmit = async (e) => {
     e.preventDefault(); const fd = Object.fromEntries(new FormData(e.target));
     const v = parseFloat(String(fd.value).replace(',', '.'));

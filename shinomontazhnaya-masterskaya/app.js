@@ -17,8 +17,6 @@ const mapHref = () => 'https://yandex.ru/maps/?text=' + encodeURIComponent(`${B.
 
 async function init() {
   if (!HAS_DB) $('demoBar').classList.remove('hide');
-  // пока студия не купила приложение — предупреждаем случайных посетителей
-  else if (CFG.business?.live !== true) { $('previewBar').classList.remove('hide'); $('previewPhone').textContent = CFG.business?.phone || ''; $('previewPhone').href = 'tel:' + String(CFG.business?.phone || '').replace(/[^\d+]/g, ''); }
   // сразу рисуем из встроенных/сохранённых данных, затем тихо обновляем из базы
   ({ business: B, services: S } = quickBusiness());
   paint(); setupInstall(); setupMotion();
@@ -34,6 +32,10 @@ async function init() {
 let coverSrc = '';
 function paint() {
   OFF = B.utc_offset ?? 180;
+  // пока студия не купила приложение — предупреждаем случайных посетителей (отметка live в базе или в сборке)
+  const live = B.live === true || CFG.business?.live === true;
+  $('previewBar').classList.toggle('hide', !HAS_DB || live);
+  $('previewPhone').textContent = B.phone || ''; $('previewPhone').href = 'tel:' + String(B.phone || '').replace(/[^\d+]/g, '');
   document.documentElement.style.setProperty('--accent', B.accent || '#3b82f6');
   paintLogo($('logo'), B, initials(B.name)); paintLogo($('chatLogo'), B, initials(B.name)); paintLogo($('tbLogo'), B, initials(B.name)); $('tbName').textContent = B.name;
   // обложка проявляется плавно, когда фото загрузилось

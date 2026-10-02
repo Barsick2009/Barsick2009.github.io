@@ -196,6 +196,7 @@ const SupaStore = {
     const { error } = await c.storage.from('photos').upload(path, file, { upsert: false, contentType: file.type });
     if (error) throw humanErr(error); return c.storage.from('photos').getPublicUrl(path).data.publicUrl;
   },
+  async changePassword(pass) { const c = await sb(); const { error } = await c.auth.updateUser({ password: pass }); if (error) throw new Error(/same|different/i.test(error.message) ? 'Новый пароль совпадает со старым' : 'Не удалось сменить пароль: ' + error.message); },
   async tgStatus(bizId) { const c = await sb(); const { data, error } = await c.rpc('tg_status', { p_business: bizId }); if (error) throw humanErr(error); return data; },
   async tgLink(bizId) { const c = await sb(); const { data, error } = await c.rpc('tg_link', { p_business: bizId }); if (error) throw humanErr(error); return data.url; },
   async tgUnlink(bizId) { const c = await sb(); const { error } = await c.rpc('tg_unlink', { p_business: bizId }); if (error) throw humanErr(error); },

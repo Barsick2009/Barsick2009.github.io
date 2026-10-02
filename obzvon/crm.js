@@ -115,9 +115,42 @@ function card(l) {
       <div class="form"><label>Перезвонить <input type="date" id="d-${l.id}" value="${l.nextCall || addDays(2)}"></label><button class="btn r" style="--sc:var(--s-callback)" data-a="callback" data-id="${l.id}">Сохранить перезвон</button></div>
       <div class="form"><label>Сумма, ₽ <input type="number" id="a-${l.id}" min="0" step="100" value="${l.amount || 3500}" style="width:110px"></label><label><input type="checkbox" id="m-${l.id}" ${l.status !== 'sold' || l.monthly ? 'checked' : ''}> абонемент 790/мес</label><button class="btn r" style="--sc:var(--s-sold)" data-a="sold" data-id="${l.id}">Купил</button></div>
     </div>` : ''}
+    ${l.status === 'sold' ? cabinetBlock(l) : ''}
     <textarea class="notes" data-id="${l.id}" placeholder="Заметки: имя владельца, что сказал…">${esc(l.notes)}</textarea>
     <div class="foot"><span>Звонков: <b class="num">${l.attempts || 0}</b></span>${l.lastCall ? `<span>последний ${fmtWhen(l.lastCall)}</span>` : ''}${due}</div>
   </article>`;
+}
+
+// ---------- выдача кабинета владельцу (после продажи) ----------
+let issueOpen = null, issued = {};   // issued[id] = текст для владельца (пароль показываем один раз, не храним)
+const genPass = () => { const a = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789'; const r = crypto.getRandomValues(new Uint32Array(10)); return Array.from(r, (n) => a[n % a.length]).join(''); };
+const slugOf = (l) => (String(l.app || '').match(/\/([^/]+)\/?$/) || [, l.id])[1];
+function ownerText(l, email, pass) {
+  const app = l.app || '', adm = app.replace(/\/?$/, '/') + 'admin.html';
+  return `Готово, ваша онлайн-запись работает!\n\nСсылка для клиентов: ${app}\nПоставьте её в шапку ВК, Telegram, 2ГИС и Яндекс Карт.\n\nВаш кабинет: ${adm}\nЛогин: ${email}\nПароль: ${pass}\n\nВ кабинете во вкладке «Профиль» нажмите «Подключить Telegram» — новые записи будут приходить вам сразу. Там же меняются цены, фото, часы работы и пароль.`;
+}
+function cabinetBlock(l) {
+  if (issued[l.id]) return `<div class="res cab"><b>Кабинет выдан ✓</b><textarea class="cabtext" readonly rows="9">${esc(issued[l.id])}</textarea><div class="row"><button class="btn pri" data-a="copyCab" data-id="${l.id}">Скопировать текст для владельца</button></div><div class="small-note">Пароль виден только сейчас — отправьте текст владельцу.</div></div>`;
+  if (issueOpen === l.id) return `<div class="res cab">
+    <div class="form"><input id="ce-${l.id}" type="email" placeholder="Почта владельца" value="${esc(l.cabinetEmail || '')}" style="flex:1;min-width:180px"><input id="cp-${l.id}" value="${genPass()}" style="width:140px"></div>
+    <div class="form"><button class="btn pri" data-a="issue" data-id="${l.id}">Создать вход и передать студию</button><button class="btn ghost" data-a="issueClose" data-id="${l.id}">Отмена</button></div>
+    <div class="small-note">Студия перейдёт на владельца, плашка «Демо» исчезнет, твой Telegram от неё отключится.</div></div>`;
+  return `<div class="row">${l.cabinetEmail ? `<span class="small-note">Кабинет: ${esc(l.cabinetEmail)}${l.cabinetAt ? ' · ' + fmtWhen(l.cabinetAt) : ''}</span>` : ''}<button class="btn ${l.cabinetEmail ? 'ghost' : 'pri'}" data-a="issueOpen" data-id="${l.id}">${l.cabinetEmail ? 'Выдать заново' : 'Выдать кабинет владельцу'}</button></div>`;
+}
+async function issueCabinet(l) {
+  const email = $('ce-' + l.id).value.trim(), pass = $('cp-' + l.id).value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return toast('Проверьте почту владельца');
+  if (pass.length < 8) return toast('Пароль — не короче 8 символов');
+  const btn = document.querySelector(`[data-a="issue"][data-id="${l.id}"]`); if (btn) { btn.disabled = true; btn.textContent = 'Создаём…'; }
+  const { data, error } = await sb.rpc('admin_issue_cabinet', { p_slug: slugOf(l), p_email: email, p_password: pass });
+  if (error) {
+    const m = error.message || '';
+    toast(/not_admin/.test(m) ? 'Нет прав: войдите под своей почтой' : /business_not_found/.test(m) ? 'Студии нет в базе — сначала загрузите её' : 'Не получилось: ' + m);
+    if (btn) { btn.disabled = false; btn.textContent = 'Создать вход и передать студию'; }
+    return;
+  }
+  issueOpen = null; issued[l.id] = ownerText(l, email, pass);
+  await save(l.id, withLog(l, 'выдан кабинет ' + email, { cabinetEmail: email, cabinetAt: new Date().toISOString() }), data.created ? 'Вход создан, студия передана владельцу' : 'Почта уже была — пароль обновлён, студия передана');
 }
 
 // ---------- действия ----------
@@ -138,6 +171,10 @@ async function act(id, a) {
   const l = leads.find((x) => x.id === id); if (!l) return;
   if (a === 'copyPhone') return copy(l.phone, 'Номер скопирован');
   if (a === 'copyOwner') return copy(l.ownerPhone, 'Номер владельца скопирован');
+  if (a === 'issueOpen') { issueOpen = id; return render(); }
+  if (a === 'issueClose') { issueOpen = null; return render(); }
+  if (a === 'issue') return issueCabinet(l);
+  if (a === 'copyCab') return copy(issued[id], 'Текст скопирован — отправьте владельцу');
   if (a === 'editOwner') { editOwner = editOwner === id ? null : id; return render(); }
   if (a === 'saveOwner') {
     editOwner = null;
