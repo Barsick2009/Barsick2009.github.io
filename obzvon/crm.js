@@ -25,7 +25,7 @@ const rub = (n) => new Intl.NumberFormat('ru-RU').format(Math.round(n || 0));
 $('today').textContent = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long'});
 
 const sb = window.supabase.createClient(SB_URL, SB_KEY, {auth: {storageKey: 'boxapp-crm'}});
-let leads = [], filter = 'todo', query = '', openRes = null, editOwner = null;
+let leads = [], filter = 'todo', query = '', openRes = null, editOwner = null, city = 'all';
 const waLink = (p) => { const d = String(p).replace(/\D/g, '').replace(/^8(?=\d{10}$)/, '7'); return d.length === 11 ? `<a class="btn ghost" href="https://wa.me/${d}" target="_blank" rel="noopener">WhatsApp</a>` : ''; };
 function toast(t) { const el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2200); }
 async function copy(text, okMsg) {
@@ -57,6 +57,13 @@ function renderStats() {
   const moreOn = more.some(([k]) => k === filter);
   $('chips').innerHTML = `<div class="tabs2">${tabs.map(([k, n, c]) => `<button class="tab2 ${filter === k ? 'on' : ''} ${k === 'due' && c ? 'hot' : ''}" data-f="${k}"><span>${n}</span><b class="num">${c}</b></button>`).join('')}</div>
     <details class="more" ${moreOn ? 'open' : ''}><summary>Ещё фильтры по статусу</summary><div class="chips">${more.map(([k, n, c]) => `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${n} <span class="n">${c}</span></button>`).join('')}</div></details>`;
+  // города — если студии больше чем из одного
+  const cities = [...new Set(leads.map((l) => l.city || 'Ростов-на-Дону'))];
+  if (cities.length > 1) {
+    const cnt = (c) => leads.filter((l) => (l.city || 'Ростов-на-Дону') === c).length;
+    $('chips').insertAdjacentHTML('afterbegin', `<div class="chips cities">${[['all', 'Все города', leads.length], ...cities.sort((a, b) => cnt(b) - cnt(a)).map((c) => [c, c, cnt(c)])].map(([k, n, c]) => `<button class="chip ${city === k ? 'on' : ''}" data-city="${esc(k)}">${esc(n)} <span class="n">${c}</span></button>`).join('')}</div>`);
+    $('chips').querySelectorAll('[data-city]').forEach((b) => b.onclick = () => { city = b.dataset.city; render(); });
+  }
   $('chips').querySelectorAll('[data-f]').forEach((b) => b.onclick = () => { filter = b.dataset.f; render(); scrollTo({top: $('chips').offsetTop - 8, behavior: 'smooth'}); });
   // плитки сводки — тоже кнопки
   [['k-called', 'all'], ['k-answered', 'answered'], ['k-link', 'link'], ['k-sold', 'sold']].forEach(([id, f]) => {
@@ -82,7 +89,7 @@ function cmp(a, b) { const x = sortKey(a), y = sortKey(b); for (let i = 0; i < 3
 function render() {
   renderStats();
   const q = query.trim().toLowerCase();
-  let list = leads.filter((l) => (FILTERS[filter] || ((x) => x.status === filter))(l));
+  let list = leads.filter((l) => (FILTERS[filter] || ((x) => x.status === filter))(l) && (city === 'all' || (l.city || 'Ростов-на-Дону') === city));
   if (q) list = list.filter((l) => `${l.name} ${l.address} ${l.phone} ${l.ownerName || ''} ${l.ownerPhone || ''}`.toLowerCase().includes(q));
   list.sort(cmp);
   const EMPTY = {todo: 'Все обзвонены 🎉 Загляните во «Взяли ссылку» и «Перезвонить сегодня».', due: 'На сегодня перезвонов нет.', link: 'Пока никто не взял ссылку — всё впереди.', sold: 'Продаж пока нет. Первая уже близко!'};
@@ -98,7 +105,7 @@ function card(l) {
   return `<article class="card" style="--sc:var(${s.c})">
     <div class="c-top"><span class="rank">${l.rank}</span>
       <div style="min-width:0"><div class="c-name">${esc(l.name)}</div>
-        <div class="c-meta">${l.rating ? `<span class="star">★ ${String(l.rating).replace('.', ',')}</span> · ${l.reviews} отз. · ` : ''}${esc(l.address)}</div></div>
+        <div class="c-meta">${l.rating ? `<span class="star">★ ${String(l.rating).replace('.', ',')}</span> · ${l.reviews} отз. · ` : ''}${l.city && l.city !== 'Ростов-на-Дону' ? `<b>${esc(l.city)}</b>, ` : ''}${esc(l.address)}</div></div>
       <span class="pill">${s.name}${l.status === 'sold' && l.amount ? ` · ${rub(l.amount)} ₽` : ''}</span></div>
     ${l.ownerPhone || l.ownerName ? `<div class="owner">
       <div class="o-h"><span class="o-label">Владелец</span><b>${esc(l.ownerName || 'имя не записано')}</b>${l.bestTime ? `<span class="o-time">звонить: ${esc(l.bestTime)}</span>` : ''}</div>
