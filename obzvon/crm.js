@@ -50,10 +50,24 @@ function renderStats() {
   const total = leads.length || 1;
   $('funnel').innerHTML = ORDER.filter((k) => by[k]).map((k) => `<i style="width:${by[k] / total * 100}%;background:var(${ST[k].c})" title="${ST[k].name}: ${by[k]}"></i>`).join('');
   $('legend').innerHTML = ORDER.filter((k) => by[k]).map((k) => `<span><i class="dot" style="background:var(${ST[k].c})"></i>${ST[k].name} <b class="num">${by[k]}</b></span>`).join('');
-  const chips = [['todo', 'К звонку', leads.filter(isTodo).length], ['due', 'Перезвонить сегодня', leads.filter(isDue).length], ['all', 'Все', leads.length], ...ORDER.map((k) => [k, ST[k].name, by[k]])];
-  $('chips').innerHTML = chips.map(([k, n, c]) => `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${n} <span class="n">${c}</span></button>`).join('');
-  $('chips').querySelectorAll('.chip').forEach((b) => b.onclick = () => { filter = b.dataset.f; render(); });
+  // главные вкладки — крупно; статусы по отдельности — под «Ещё фильтры»
+  const tabs = [['todo', 'К звонку', leads.filter(isTodo).length], ['due', 'Перезвонить сегодня', leads.filter(isDue).length],
+    ['link', 'Взяли ссылку', link], ['sold', 'Купили', by.sold], ['all', 'Все', leads.length]];
+  const more = ORDER.filter((k) => k !== 'sold').map((k) => [k, ST[k].name, by[k]]);
+  const moreOn = more.some(([k]) => k === filter);
+  $('chips').innerHTML = `<div class="tabs2">${tabs.map(([k, n, c]) => `<button class="tab2 ${filter === k ? 'on' : ''} ${k === 'due' && c ? 'hot' : ''}" data-f="${k}"><span>${n}</span><b class="num">${c}</b></button>`).join('')}</div>
+    <details class="more" ${moreOn ? 'open' : ''}><summary>Ещё фильтры по статусу</summary><div class="chips">${more.map(([k, n, c]) => `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${n} <span class="n">${c}</span></button>`).join('')}</div></details>`;
+  $('chips').querySelectorAll('[data-f]').forEach((b) => b.onclick = () => { filter = b.dataset.f; render(); scrollTo({top: $('chips').offsetTop - 8, behavior: 'smooth'}); });
+  // плитки сводки — тоже кнопки
+  [['k-called', 'all'], ['k-answered', 'answered'], ['k-link', 'link'], ['k-sold', 'sold']].forEach(([id, f]) => {
+    const tile = $(id).closest('.kpi'); tile.classList.add('click'); tile.classList.toggle('on', filter === f);
+    tile.onclick = () => { filter = f; render(); scrollTo({top: $('chips').offsetTop - 8, behavior: 'smooth'}); };
+  });
 }
+const FILTERS = {
+  all: () => true, todo: (l) => isTodo(l), due: (l) => isDue(l),
+  link: (l) => ['sent', 'thinking', 'sold'].includes(l.status), answered: (l) => !!l.answered,
+};
 const isDue = (l) => l.nextCall && l.nextCall <= TODAY && !['sold', 'no'].includes(l.status);
 const isTodo = (l) => l.status === 'new' || l.status === 'noanswer' || l.status === 'owner' || isDue(l);
 
@@ -68,10 +82,11 @@ function cmp(a, b) { const x = sortKey(a), y = sortKey(b); for (let i = 0; i < 3
 function render() {
   renderStats();
   const q = query.trim().toLowerCase();
-  let list = leads.filter((l) => filter === 'all' ? true : filter === 'todo' ? isTodo(l) : filter === 'due' ? isDue(l) : l.status === filter);
+  let list = leads.filter((l) => (FILTERS[filter] || ((x) => x.status === filter))(l));
   if (q) list = list.filter((l) => `${l.name} ${l.address} ${l.phone} ${l.ownerName || ''} ${l.ownerPhone || ''}`.toLowerCase().includes(q));
   list.sort(cmp);
-  if (!list.length) { $('list').innerHTML = `<div class="empty">${leads.length ? 'В этом фильтре пусто.' : 'Студий пока нет.'}</div>`; return; }
+  const EMPTY = {todo: 'Все обзвонены 🎉 Загляните во «Взяли ссылку» и «Перезвонить сегодня».', due: 'На сегодня перезвонов нет.', link: 'Пока никто не взял ссылку — всё впереди.', sold: 'Продаж пока нет. Первая уже близко!'};
+  if (!list.length) { $('list').innerHTML = `<div class="empty">${leads.length ? (EMPTY[filter] || 'В этом фильтре пусто.') : 'Студий пока нет.'}</div>`; return; }
   $('list').innerHTML = list.map(card).join('');
   $('list').querySelectorAll('[data-a]').forEach((b) => b.onclick = () => act(b.dataset.id, b.dataset.a));
   $('list').querySelectorAll('textarea.notes').forEach((t) => t.onchange = () => save(t.dataset.id, {notes: t.value}, 'Заметка сохранена'));
