@@ -24,7 +24,12 @@ window.APP_CONFIG = {
   "days_off": [],
   "live": false,
   "reviews": [],
-  "rating": null,
+  "rating": {
+   "value": 4.9,
+   "count": 0,
+   "source": "2ГИС",
+   "url": ""
+  },
   "before_after": []
  },
  "services": [

@@ -26,7 +26,7 @@ async function init() {
   if (HAS_DB) {
     try {
       const fresh = await store.loadBusiness();
-      if (JSON.stringify(fresh) !== JSON.stringify({ business: B, services: S })) { ({ business: B, services: S } = fresh); paint(); }
+      if (fresh && JSON.stringify(fresh) !== JSON.stringify({ business: B, services: S })) { ({ business: B, services: S } = fresh); document.body.classList.add('repaint'); paint(); }
     } catch {}
   }
 }
@@ -143,7 +143,9 @@ function openInfo(s) {
 }
 let PH = [];
 function renderGallery() {
-  PH = (B.photos && B.photos.length) ? B.photos : ['img/work1.svg', 'img/work2.svg', 'img/work3.svg'];
+  // без своих фото блок «Наши работы» не показываем — заглушки выглядят несерьёзно
+  $('galBox').classList.toggle('hide', !(B.photos && B.photos.length));
+  PH = (B.photos && B.photos.length) ? B.photos : [];
   const g = $('gallery');
   g.innerHTML = PH.map((u, i) => `<img src="${esc(u)}" alt="Работа ${esc(B.name)}" loading="lazy" data-i="${i}">`).join('');
   g.querySelectorAll('img').forEach((im) => im.onclick = () => openLb(+im.dataset.i));

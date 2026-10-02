@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Fresh Auto — онлайн-запись</title>
+<meta name="description" content="Fresh Auto: онлайн-запись на мойку и детейлинг. Ростов-на-Дону, улица Вавилова, 59е">
+<meta name="theme-color" content="#07080b">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fresh Auto">
+<meta property="og:title" content="Fresh Auto — запись онлайн">
+<meta property="og:description" content="Выберите услугу и время за 30 секунд">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="modulepreload" href="app.js"><link rel="modulepreload" href="core.js"><link rel="modulepreload" href="icons.js"><link rel="modulepreload" href="svcinfo.js"><link rel="modulepreload" href="cars.js">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<script src="config.js"></script>
+<script>if (window.APP_CONFIG && APP_CONFIG.supabaseUrl) { const l = document.createElement('link'); l.rel = 'preconnect'; l.href = APP_CONFIG.supabaseUrl; l.crossOrigin = ''; document.head.append(l); }</script>
+</head>
+<body class="client">
+<div id="demoBar" class="demo-bar hide">Демо-версия: записи сохраняются только на этом устройстве</div>
+<div id="previewBar" class="preview-bar hide"><b>Демо-версия для владельца.</b> Онлайн-запись ещё не подключена к студии — чтобы записаться, позвоните: <a id="previewPhone"></a></div>
+<div class="topbar" id="topbar"><div class="wrap row"><div class="logo" id="tbLogo"></div><b class="grow" id="tbName"></b><button class="btn primary" id="tbBook">Записаться</button></div></div>
+
+<header class="hero"><div class="cover" id="cover"><div class="cover-img" id="coverImg"></div></div><div class="wrap hero-in">
+  <div class="top">
+    <div class="logo" id="logo"></div>
+    <div class="grow"><h1 id="bizName"></h1><div class="addr" id="bizAddr"></div></div>
+  </div>
+  <div class="status"><span class="dot" id="openDot"></span><span id="openText"></span></div>
+  <p class="about" id="bizAbout"></p>
+  <div class="actions">
+    <button class="btn primary" id="bookBtn">Записаться онлайн</button>
+    <a class="btn icon" id="callBtn" aria-label="Позвонить"><svg class="i" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg></a>
+    <a class="btn icon" id="mapBtn" target="_blank" rel="noopener" aria-label="Маршрут"><svg class="i" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></a>
+  </div>
+  <div class="msgr" id="msgrRow"></div>
+  <div id="installBox" class="install card hide">
+    <div class="grow small"><b>Добавьте на экран</b><br><span class="muted" id="installHint">Запись в 1 касание, без установки</span></div>
+    <button class="btn" id="installBtn">Добавить</button>
+  </div>
+</div></header>
+
+<main class="wrap cols">
+  <div class="col-main">
+  <div id="myBookings"></div>
+  <h2 class="sec">Услуги и цены</h2>
+  <div id="services"></div>
+  <div id="baBox" class="hide"><h2 class="sec">До и после</h2><div class="ba-list" id="baList"></div></div>
+  <div id="revBox" class="hide"><h2 class="sec">Отзывы</h2><a id="revRate" class="rev-sum" target="_blank" rel="noopener"></a><div class="rev-marquee" id="revList"></div></div>
+  </div>
+  <aside class="col-side">
+  <div id="galBox"><h2 class="sec">Наши работы</h2>
+  <div class="gallery" id="gallery"></div>
+  <div class="gdots" id="gdots"></div></div>
+  <h2 class="sec">Контакты</h2>
+  <div class="info">
+    <a class="card" id="infoPhone"><svg class="i" viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"/></svg><div><div id="infoPhoneT"></div><div class="small muted">Позвонить</div></div></a>
+    <a class="card" id="infoMap" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg><div><div id="infoAddr"></div><div class="small muted">Построить маршрут</div></div></a>
+    <div class="card"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><div><div id="infoHours"></div><div class="small muted"><span id="infoDays">Ежедневно</span> · боксов: <span id="infoBoxes"></span></div></div></div>
+  </div>
+  </aside>
+</main>
+<footer class="foot">Онлайн-запись · <a href="admin.html">Вход для владельца</a></footer>
+
+<button class="fab" id="chatBtn"><svg class="i" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Ассистент</button>
+
+<!-- запись -->
+<div class="sheet-bg" id="bg"></div>
+<section class="sheet" id="bookSheet" aria-modal="true">
+  <div class="grab"></div>
+  <div class="hd"><button class="btn icon" id="backBtn" style="height:36px;width:36px;background:var(--card)"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button><h3 id="stepTitle"></h3><button class="btn icon close" style="height:36px;width:36px;background:var(--card)"><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="steps"><i></i><i></i><i></i></div>
+  <div class="bd" id="stepBody"></div>
+  <div class="ft" id="stepFoot"></div>
+</section>
+
+<!-- подробно об услуге -->
+<section class="sheet" id="infoSheet" aria-modal="true">
+  <div class="grab"></div>
+  <div class="hd"><span id="infoIc"></span><h3 id="infoName"></h3><button class="btn icon close" style="height:36px;width:36px;background:var(--card)"><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="bd" id="infoBody"></div>
+  <div class="ft"><button class="btn primary block" id="infoBook">Записаться</button></div>
+</section>
+
+<!-- ассистент -->
+<section class="sheet" id="chatSheet" aria-modal="true" style="height:86dvh">
+  <div class="grab"></div>
+  <div class="hd"><div class="logo" style="width:36px;height:36px;border-radius:11px;font-size:14px" id="chatLogo"></div><h3>Ассистент<div class="small muted" style="font-weight:400">Подберёт услугу и свободное время</div></h3><button class="btn icon close" style="height:36px;width:36px;background:var(--card)"><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="bd"><div class="chat" id="chat"></div></div>
+  <div class="ft"><form class="composer" id="chatForm"><input id="chatInput" placeholder="Хочу мойку завтра после 6" autocomplete="off"><button class="btn primary icon"><svg class="i" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg></button></form></div>
+</section>
+<!-- просмотр фото -->
+<div class="lb" id="lb" aria-hidden="true">
+  <div class="lb-top"><span id="lbCount"></span><button class="btn icon" id="lbClose" aria-label="Закрыть"><svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+  <div class="lb-track" id="lbTrack"></div>
+  <button class="lb-nav prev" id="lbPrev" aria-label="Назад"><svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+  <button class="lb-nav next" id="lbNext" aria-label="Вперёд"><svg class="i" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
+  <div class="lb-hint">Дважды коснитесь, чтобы приблизить</div>
+</div>
+<div class="toast" id="toast"></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>

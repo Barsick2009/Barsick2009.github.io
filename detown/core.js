@@ -149,7 +149,7 @@ const SupaStore = {
   async loadBusiness() {
     const c = await sb();
     const { data: b, error } = await c.from('businesses').select('*').eq('slug', CFG.slug).maybeSingle();
-    if (error || !b) return DemoStore.loadBusiness(); // ещё не залит seed — показываем встроенные данные
+    if (error || !b) return null;   // сервиса ещё нет в базе (не залит seed) — остаёмся на встроенных данных
     const { data: s } = await c.from('services').select('*').eq('business_id', b.id).eq('active', true).order('sort');
     const res = { business: normBiz(b), services: s || [] };
     ls.set(CACHE(), res);
