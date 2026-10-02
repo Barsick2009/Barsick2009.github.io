@@ -5,13 +5,14 @@ const SB_KEY = 'sb_publishable__niW67fjhWr1Y10dVTRplg_F-C649q8';
 const ST = {
   new:      {name:'Не звонил', c:'--s-new'},
   noanswer: {name:'Не ответил', c:'--s-noanswer'},
+  owner:    {name:'Нужен владелец', c:'--s-owner'},
   callback: {name:'Перезвонить', c:'--s-callback'},
   sent:     {name:'Ссылка отправлена', c:'--s-sent'},
   thinking: {name:'Думает', c:'--s-thinking'},
   sold:     {name:'Купил', c:'--s-sold'},
   no:       {name:'Не интересно', c:'--s-no'},
 };
-const ORDER = ['new','noanswer','callback','sent','thinking','sold','no'];
+const ORDER = ['new','noanswer','owner','callback','sent','thinking','sold','no'];
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad = (n) => String(n).padStart(2, '0');
@@ -24,7 +25,8 @@ const rub = (n) => new Intl.NumberFormat('ru-RU').format(Math.round(n || 0));
 $('today').textContent = new Date().toLocaleDateString('ru-RU', {weekday:'long', day:'numeric', month:'long'});
 
 const sb = window.supabase.createClient(SB_URL, SB_KEY, {auth: {storageKey: 'boxapp-crm'}});
-let leads = [], filter = 'todo', query = '', openRes = null;
+let leads = [], filter = 'todo', query = '', openRes = null, editOwner = null;
+const waLink = (p) => { const d = String(p).replace(/\D/g, '').replace(/^8(?=\d{10}$)/, '7'); return d.length === 11 ? `<a class="btn ghost" href="https://wa.me/${d}" target="_blank" rel="noopener">WhatsApp</a>` : ''; };
 function toast(t) { const el = $('toast'); el.textContent = t; el.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove('on'), 2200); }
 async function copy(text, okMsg) {
   try { await navigator.clipboard.writeText(text); toast(okMsg); }
@@ -53,12 +55,12 @@ function renderStats() {
   $('chips').querySelectorAll('.chip').forEach((b) => b.onclick = () => { filter = b.dataset.f; render(); });
 }
 const isDue = (l) => l.nextCall && l.nextCall <= TODAY && !['sold', 'no'].includes(l.status);
-const isTodo = (l) => l.status === 'new' || l.status === 'noanswer' || isDue(l);
+const isTodo = (l) => l.status === 'new' || l.status === 'noanswer' || l.status === 'owner' || isDue(l);
 
 // ---------- список ----------
 function sortKey(l) {
   if (isDue(l)) return [0, l.nextCall, l.rank];
-  const w = {new:1, noanswer:2, callback:3, thinking:4, sent:5, sold:6, no:7}[l.status] ?? 8;
+  const w = {new:1, noanswer:2, owner:3, callback:3, thinking:4, sent:5, sold:6, no:7}[l.status] ?? 8;
   return [w, '', l.rank];
 }
 function cmp(a, b) { const x = sortKey(a), y = sortKey(b); for (let i = 0; i < 3; i++) { if (x[i] < y[i]) return -1; if (x[i] > y[i]) return 1; } return 0; }
@@ -67,7 +69,7 @@ function render() {
   renderStats();
   const q = query.trim().toLowerCase();
   let list = leads.filter((l) => filter === 'all' ? true : filter === 'todo' ? isTodo(l) : filter === 'due' ? isDue(l) : l.status === filter);
-  if (q) list = list.filter((l) => `${l.name} ${l.address} ${l.phone}`.toLowerCase().includes(q));
+  if (q) list = list.filter((l) => `${l.name} ${l.address} ${l.phone} ${l.ownerName || ''} ${l.ownerPhone || ''}`.toLowerCase().includes(q));
   list.sort(cmp);
   if (!list.length) { $('list').innerHTML = `<div class="empty">${leads.length ? 'В этом фильтре пусто.' : 'Студий пока нет.'}</div>`; return; }
   $('list').innerHTML = list.map(card).join('');
@@ -83,7 +85,15 @@ function card(l) {
       <div style="min-width:0"><div class="c-name">${esc(l.name)}</div>
         <div class="c-meta">${l.rating ? `<span class="star">★ ${String(l.rating).replace('.', ',')}</span> · ${l.reviews} отз. · ` : ''}${esc(l.address)}</div></div>
       <span class="pill">${s.name}${l.status === 'sold' && l.amount ? ` · ${rub(l.amount)} ₽` : ''}</span></div>
-    <div class="phone"><a class="num" href="tel:${esc(String(l.phone).replace(/[^\d+]/g, ''))}">${esc(l.phone)}</a><button class="btn ghost" data-a="copyPhone" data-id="${l.id}">Копировать номер</button></div>
+    ${l.ownerPhone || l.ownerName ? `<div class="owner">
+      <div class="o-h"><span class="o-label">Владелец</span><b>${esc(l.ownerName || 'имя не записано')}</b>${l.bestTime ? `<span class="o-time">звонить: ${esc(l.bestTime)}</span>` : ''}</div>
+      ${l.ownerPhone ? `<div class="phone"><a class="num" href="tel:${esc(String(l.ownerPhone).replace(/[^\d+]/g, ''))}">${esc(l.ownerPhone)}</a><button class="btn ghost" data-a="copyOwner" data-id="${l.id}">Копировать</button>${waLink(l.ownerPhone)}</div>` : ''}
+    </div>` : ''}
+    <div class="phone">${l.ownerPhone ? '<span class="o-label">Студия</span>' : ''}<a class="num ${l.ownerPhone ? 'small' : ''}" href="tel:${esc(String(l.phone).replace(/[^\d+]/g, ''))}">${esc(l.phone)}</a><button class="btn ghost" data-a="copyPhone" data-id="${l.id}">Копировать номер</button></div>
+    ${editOwner === l.id ? `<div class="res owner-form">
+      <div class="form"><input id="on-${l.id}" placeholder="Имя владельца" value="${esc(l.ownerName || '')}"><input id="op-${l.id}" type="tel" placeholder="Его номер" value="${esc(l.ownerPhone || '')}"></div>
+      <div class="form"><input id="ot-${l.id}" placeholder="Когда удобно звонить (например, после 18)" value="${esc(l.bestTime || '')}" style="flex:1"><button class="btn pri" data-a="saveOwner" data-id="${l.id}">Сохранить</button></div>
+    </div>` : `<div><button class="btn ghost" data-a="editOwner" data-id="${l.id}">${l.ownerPhone || l.ownerName ? 'Изменить данные владельца' : '+ Данные владельца'}</button></div>`}
     <div class="links">
       ${l.wa ? `<a class="btn" href="${esc(l.wa)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
       ${l.tg ? `<a class="btn" href="${esc(l.tg)}" target="_blank" rel="noopener">Telegram</a>` : ''}
@@ -97,6 +107,7 @@ function card(l) {
     </div>
     ${open ? `<div class="res">
       <div class="row">
+        <button class="btn r" style="--sc:var(--s-owner)" data-a="owner" data-id="${l.id}">Ответил сотрудник</button>
         <button class="btn r" style="--sc:var(--s-sent)" data-a="sent" data-id="${l.id}">Ссылку отправил</button>
         <button class="btn r" style="--sc:var(--s-thinking)" data-a="thinking" data-id="${l.id}">Думает</button>
         <button class="btn r" style="--sc:var(--s-no)" data-a="no" data-id="${l.id}">Не интересно</button>
@@ -126,6 +137,12 @@ function withLog(l, text, extra = {}) {
 async function act(id, a) {
   const l = leads.find((x) => x.id === id); if (!l) return;
   if (a === 'copyPhone') return copy(l.phone, 'Номер скопирован');
+  if (a === 'copyOwner') return copy(l.ownerPhone, 'Номер владельца скопирован');
+  if (a === 'editOwner') { editOwner = editOwner === id ? null : id; return render(); }
+  if (a === 'saveOwner') {
+    editOwner = null;
+    return save(id, {ownerName: $('on-' + id).value.trim(), ownerPhone: $('op-' + id).value.trim(), bestTime: $('ot-' + id).value.trim()}, 'Данные владельца сохранены');
+  }
   if (a === 'copyMsg') return copy(l.message, 'Сообщение скопировано — вставьте в WhatsApp');
   if (a === 'toggle') { openRes = openRes === id ? null : id; return render(); }
   const tries = (l.attempts || 0) + 1;
@@ -134,6 +151,7 @@ async function act(id, a) {
     return save(id, withLog(l, 'не ответил', {...next, attempts: tries}), 'Отмечено: не ответил, перезвон завтра');
   }
   openRes = null;
+  if (a === 'owner') { editOwner = id; return save(id, withLog(l, 'ответил сотрудник', {status: 'owner', answered: true, attempts: tries, nextCall: addDays(1)}), 'Запишите, как связаться с владельцем'); }
   if (a === 'sent') return save(id, withLog(l, 'ссылка отправлена', {status: 'sent', answered: true, attempts: tries, nextCall: addDays(2)}), 'Ссылка отправлена · перезвон через 2 дня');
   if (a === 'thinking') return save(id, withLog(l, 'думает', {status: 'thinking', answered: true, attempts: tries, nextCall: addDays(2)}), 'Думает · перезвон через 2 дня');
   if (a === 'no') return save(id, withLog(l, 'не интересно', {status: 'no', answered: true, attempts: tries, nextCall: ''}), 'Отмечено: не интересно');

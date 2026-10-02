@@ -6,18 +6,18 @@
 :root{
   --bg:#f2f4f1; --surface:#ffffff; --surface2:#f7f8f6; --ink:#17201c; --muted:#5b6862; --line:#dde2dc;
   --accent:#1d6b58; --accent-ink:#ffffff; --money:#a8681a;
-  --s-new:#6b756f; --s-noanswer:#b26a12; --s-callback:#2a63b8; --s-sent:#1d6b58; --s-thinking:#7a4bb3; --s-sold:#1e8a3e; --s-no:#b23b3b;
+  --s-new:#6b756f; --s-owner:#0e7c86; --s-noanswer:#b26a12; --s-callback:#2a63b8; --s-sent:#1d6b58; --s-thinking:#7a4bb3; --s-sold:#1e8a3e; --s-no:#b23b3b;
   --display:"Onest",system-ui,sans-serif; --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
   --r:14px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --bg:#0f1412; --surface:#171e1b; --surface2:#1d2622; --ink:#e7eeea; --muted:#94a39c; --line:#28322e;
   --accent:#4cbf9d; --accent-ink:#0b1310; --money:#e2ab52;
-  --s-new:#8d9792; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}}
+  --s-new:#8d9792; --s-owner:#4cc3cc; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1412; --surface:#171e1b; --surface2:#1d2622; --ink:#e7eeea; --muted:#94a39c; --line:#28322e;
   --accent:#4cbf9d; --accent-ink:#0b1310; --money:#e2ab52;
-  --s-new:#8d9792; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}
+  --s-new:#8d9792; --s-owner:#4cc3cc; --s-noanswer:#e09a42; --s-callback:#6b9ff0; --s-sent:#4cbf9d; --s-thinking:#b08ae6; --s-sold:#5ccb7c; --s-no:#ec7b7b; color-scheme:dark}
 *{box-sizing:border-box}[hidden]{display:none!important}
 body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--body);margin:0}
 .wrap{max-width:1180px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
@@ -87,10 +87,10 @@ textarea.notes{width:100%;min-height:40px;resize:vertical;padding:8px 10px;borde
 .foot .due{color:var(--s-callback);font-weight:700}
 .foot .late{color:var(--s-no);font-weight:700}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 16px;background:var(--surface);border:1px dashed var(--line);border-radius:var(--r)}
-.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s;z-index:20}
+.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.owner{display:grid;gap:6px;background:color-mix(in srgb,var(--s-owner) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--s-owner) 30%,var(--line));border-radius:12px;padding:10px 12px}.o-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.o-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.o-time{font-size:13px;color:var(--s-owner);font-weight:600}.phone .num.small{font-size:14px;font-weight:600;color:var(--muted)}.owner-form input{flex:1;min-width:140px;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface)}.toast{position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom,0px));transform:translate(-50%,140%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;transition:transform .25s;z-index:20}
 .toast.on{transform:translate(-50%,0)}
 @media (max-width:820px){.list{grid-template-columns:minmax(0,1fr)}.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media (prefers-reduced-motion:reduce){.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.toast{transition:none}}
+@media (prefers-reduced-motion:reduce){.login{max-width:380px;margin:12vh auto 0;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:24px;display:grid;gap:12px}.login input{padding:11px 14px;border-radius:10px;border:1px solid var(--line);background:var(--surface2)}.err{color:var(--s-no);font-size:13.5px;min-height:1em}.phone a.num{color:var(--ink);text-decoration:none}.owner{display:grid;gap:6px;background:color-mix(in srgb,var(--s-owner) 9%,var(--surface));border:1px solid color-mix(in srgb,var(--s-owner) 30%,var(--line));border-radius:12px;padding:10px 12px}.o-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px}.o-label{font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}.o-time{font-size:13px;color:var(--s-owner);font-weight:600}.phone .num.small{font-size:14px;font-weight:600;color:var(--muted)}.owner-form input{flex:1;min-width:140px;padding:8px 10px;border-radius:9px;border:1px solid var(--line);background:var(--surface)}.toast{transition:none}}
 </style></head><body>
 
 <form class="login" id="login" hidden><h1 style="font-size:22px">Обзвон</h1><div class="sub">Вход — та же почта и пароль, что в кабинет студии</div><input id="lEmail" type="email" placeholder="Почта" autocomplete="username" required><input id="lPass" type="password" placeholder="Пароль" autocomplete="current-password" required><div class="err" id="lErr"></div><button class="btn pri">Войти</button></form><div class="wrap" id="app" hidden>
