@@ -101,6 +101,13 @@ export const messengers = (biz) => MSGR.filter((m) => String(biz?.socials?.[m.k]
   .map((m) => ({ key: m.k, name: m.name, color: m.color, kind: m.kind, sub: m.sub || 'Написать нам', href: m.mk(String(biz.socials[m.k]).trim()), svg: `<svg class="i" viewBox="0 0 24 24">${m.svg}</svg>` }));
 export const MSGR_FIELDS = MSGR.map((m) => ({ key: m.k, name: m.name, kind: m.kind, ph: m.ph }));
 
+// ---------- Цвет текста на фирменном цвете: на светлом (жёлтом, салатовом) — тёмный ----------
+export function inkFor(hex) {
+  const m = String(hex || '').match(/^#?([0-9a-f]{6})$/i); if (!m) return '#fff';
+  const n = parseInt(m[1], 16), [r, g, b] = [n >> 16, (n >> 8) & 255, n & 255].map((v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; });
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b > 0.45 ? '#141414' : '#fff';
+}
+
 // ---------- Логотип студии: картинка из настроек или инициалы ----------
 export function paintLogo(el, biz, fallback) {
   const src = biz?.logo || CFG.business?.logo, bg = biz?.logo_bg || CFG.business?.logo_bg;

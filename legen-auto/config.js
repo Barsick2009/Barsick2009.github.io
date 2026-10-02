@@ -34,7 +34,7 @@ window.APP_CONFIG = {
   "reviews": [],
   "rating": null,
   "before_after": [],
-  "logo": "logo.svg",
+  "logo": "",
   "logo_bg": "#ffffff"
  },
  "services": [

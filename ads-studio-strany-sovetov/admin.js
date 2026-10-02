@@ -1,4 +1,4 @@
-import { CFG, HAS_DB, store, todayStr, addDays, toUTC, localParts, dayLabel, dayShort, minToHM, hm, rub, durLabel, isDayOff, DOW_FULL, paintLogo, MSGR_FIELDS } from './core.js';
+import { CFG, HAS_DB, store, todayStr, addDays, toUTC, localParts, dayLabel, dayShort, minToHM, hm, rub, durLabel, isDayOff, DOW_FULL, paintLogo, MSGR_FIELDS, inkFor } from './core.js';
 import { carPicker } from './cars.js';
 
 const $ = (id) => document.getElementById(id);
@@ -30,6 +30,7 @@ async function start() {
   catch (e) { $('login').classList.remove('hide'); $('lErr').textContent = e.message; await store.signOut(); return; }
   OFF = B.utc_offset ?? 180; day = day || todayStr(OFF);
   document.documentElement.style.setProperty('--accent', B.accent || '#3b82f6');
+  document.documentElement.style.setProperty('--accent-ink', inkFor(B.accent || '#3b82f6'));
   paintLogo($('aLogo'), B, initials(B.name)); $('aName').textContent = B.name;
   $('app').classList.remove('hide');
   renderBookings(); renderServices(); renderSettings();
@@ -219,7 +220,7 @@ function renderSettings() {
     patch.socials = { ...(B.socials || {}) };
     MSGR_FIELDS.forEach(({ key }) => { const v = (fd['soc_' + key] || '').trim(); if (v) patch.socials[key] = v; else delete patch.socials[key]; });
     if (hm(patch.close_time) <= hm(patch.open_time)) return toast('Время закрытия должно быть позже открытия');
-    try { await store.saveBusiness(B.id, patch); Object.assign(B, patch); OFF = B.utc_offset; document.documentElement.style.setProperty('--accent', B.accent); $('aName').textContent = B.name; toast('Профиль сохранён'); } catch (err) { toast(err.message); }
+    try { await store.saveBusiness(B.id, patch); Object.assign(B, patch); OFF = B.utc_offset; document.documentElement.style.setProperty('--accent', B.accent); document.documentElement.style.setProperty('--accent-ink', inkFor(B.accent)); $('aName').textContent = B.name; toast('Профиль сохранён'); } catch (err) { toast(err.message); }
   };
 }
 // ---------- Telegram: подключение уведомлений ----------

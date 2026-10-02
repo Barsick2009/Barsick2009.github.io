@@ -1,4 +1,4 @@
-import { CFG, HAS_DB, store, freeSlots, todayStr, addDays, toUTC, localParts, dayLabel, dayShort, minToHM, hm, rub, durLabel, fmtWhen, askAssistant, ls, isDayOff, workDaysLabel, BODIES, hasBodies, bodyPrice, minPrice, durTag, durHuman, paintLogo, messengers, quickBusiness } from './core.js';
+import { CFG, HAS_DB, store, freeSlots, todayStr, addDays, toUTC, localParts, dayLabel, dayShort, minToHM, hm, rub, durLabel, fmtWhen, askAssistant, ls, isDayOff, workDaysLabel, BODIES, hasBodies, bodyPrice, minPrice, durTag, durHuman, paintLogo, messengers, quickBusiness, inkFor } from './core.js';
 import { carPicker } from './cars.js';
 import { svcIcon } from './icons.js';
 import { svcInfo } from './svcinfo.js';
@@ -37,6 +37,7 @@ function paint() {
   $('previewBar').classList.toggle('hide', !HAS_DB || live);
   $('previewPhone').textContent = B.phone || ''; $('previewPhone').href = 'tel:' + String(B.phone || '').replace(/[^\d+]/g, '');
   document.documentElement.style.setProperty('--accent', B.accent || '#3b82f6');
+  document.documentElement.style.setProperty('--accent-ink', inkFor(B.accent || '#3b82f6'));
   paintLogo($('logo'), B, initials(B.name)); paintLogo($('chatLogo'), B, initials(B.name)); paintLogo($('tbLogo'), B, initials(B.name)); $('tbName').textContent = B.name;
   // обложка проявляется плавно, когда фото загрузилось
   const src = B.photos && B.photos.length ? B.photos[0] : '';
