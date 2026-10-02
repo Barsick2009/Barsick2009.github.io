@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 324 189" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g id="Монтажная-область1" serif:id="Монтажная область1" transform="matrix(1,0,0,1,-12.4113,-29.5484)">
+        <rect x="12.411" y="29.548" width="323.918" height="188.468" style="fill:none;"/>
+        <g transform="matrix(1,0,0,1,0.411272,0.548399)">
+            <path d="M18,33L18,156.536C17.992,164.46 19.968,172.26 23.748,179.225C28.732,188.265 37.62,197.751 53.184,198C83.143,198.479 183.483,198 183.483,198L183.483,75.312L276.69,198L330.902,198C330.902,198 217.959,54.787 215.619,51.82C215.143,51.216 214.645,50.63 214.127,50.063C211.153,47.063 204.16,40.519 194.573,36.489C178.032,29.502 158.86,34.573 147.937,48.824C142.173,56.35 142.76,61.004 142.586,66.039C142.348,72.935 142.586,156.868 142.586,156.868L59.841,156.868L59.841,33L18,33Z" style="fill:rgb(202,33,71);"/>
+        </g>
+        <g transform="matrix(1,0,0,1,0.411272,0.548399)">
+            <path d="M121.187,157.002L141.873,197.002L141.873,157.002L121.187,157.002Z" style="fill:rgb(170,34,65);"/>
+        </g>
+    </g>
+</svg>
