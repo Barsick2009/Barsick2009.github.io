@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Справка — онлайн-запись</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: одна колонка для чтения, оглавление-чипы сверху, разделы карточками */
+:root{--bg:#f2f4f1;--surface:#fff;--surface2:#f7f8f6;--ink:#17201c;--muted:#5b6862;--line:#dde2dc;--accent:#1d6b58;--accent-ink:#fff;--r:14px;
+  --body:"Onest",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"JetBrains Mono",ui-monospace,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1412;--surface:#171e1b;--surface2:#1d2622;--ink:#e7eeea;--muted:#94a39c;--line:#28322e;--accent:#4cbf9d;--accent-ink:#0b1310;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1412;--surface:#171e1b;--surface2:#1d2622;--ink:#e7eeea;--muted:#94a39c;--line:#28322e;--accent:#4cbf9d;--accent-ink:#0b1310;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+a{color:var(--accent)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.back{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-weight:600;font-size:14px}
+h1{font-size:28px;line-height:1.15;margin:12px 0 4px;letter-spacing:-.02em;text-wrap:balance}
+.sub{color:var(--muted);font-size:14px;margin:0 0 16px}
+.toc{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 18px}
+.toc a{padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:13.5px;font-weight:600}
+section{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-bottom:14px;scroll-margin-top:12px}
+h2{font-size:20px;margin:0 0 8px;letter-spacing:-.01em}
+.part{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:26px 4px 8px}
+p{margin:0 0 10px}
+ul,ol{margin:0 0 10px;padding-left:22px;display:grid;gap:6px}
+code{font-family:var(--mono);font-size:.9em;background:var(--surface2);border:1px solid var(--line);border-radius:6px;padding:1px 5px;word-break:break-word}
+.tbl{overflow-x:auto;margin:6px 0 12px}
+table{border-collapse:collapse;width:100%;font-size:14.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.mono{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.copy{border:1px solid var(--line);background:var(--surface2);color:var(--ink);border-radius:8px;padding:2px 8px;font:600 12px var(--body);cursor:pointer;margin-left:6px}
+.note{background:var(--surface2);border-left:3px solid var(--accent);border-radius:8px;padding:10px 12px;font-size:15px;margin:8px 0 0}
+.check li{list-style:none;margin-left:-22px;padding-left:28px;position:relative}
+.check li::before{content:"";position:absolute;left:4px;top:6px;width:14px;height:14px;border:2px solid var(--accent);border-radius:4px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="back" href="./">← К обзвону</a></div>
+  <h1>Справка: приложение и свой домен</h1>
+  <p class="sub">Что рассказать владельцу студии и как подключить свой адрес вместо barsick2009.github.io</p>
+  <nav class="toc">
+    <a href="#client">Что видит клиент</a><a href="#booking">Запись</a><a href="#assistant">Ассистент</a><a href="#owner">Владельцу</a><a href="#missing">Чего нет</a>
+    <a href="#domain">Свой домен</a><a href="#buy">Покупка</a><a href="#dns">DNS и GitHub</a><a href="#after">После покупки</a>
+  </nav>
+
+  <div class="part">Приложение онлайн-записи</div>
+
+  <section id="client">
+    <h2>Что видит клиент</h2>
+    <p>Клиент открывает ссылку студии с телефона или компьютера — скачивать ничего не нужно. На ПК услуги и фото идут в две колонки.</p>
+    <ul>
+      <li><b>Шапка студии:</b> логотип, название, адрес, фото на обложке, статус «Открыто до 21:00» или «Сегодня выходной».</li>
+      <li><b>Кнопки связи:</b> «Записаться», позвонить, маршрут в Яндекс Картах, WhatsApp, Telegram, MAX, Viber — те, что есть у студии.</li>
+      <li><b>Услуги и цены:</b> у каждой иконка, цена «от…» или «по запросу» и время работы («⏱ 2 часа работы»).</li>
+      <li><b>Подробно об услуге:</b> по нажатию — «Что входит» и «Почему стоит сделать», кнопка «Записаться».</li>
+      <li><b>Цена по типу кузова:</b> седан, кроссовер, внедорожник — если студия так считает.</li>
+      <li><b>До и после:</b> два фото со шторкой, которую двигают пальцем.</li>
+      <li><b>Отзывы:</b> крупный рейтинг из 2ГИС или Яндекс Карт и лента отзывов, которая сама едет по кругу.</li>
+      <li><b>Наши работы:</b> галерея на весь экран, свайпы, приближение двойным тапом. Без фото блок не показывается.</li>
+      <li><b>Контакты:</b> телефон, мессенджеры, соцсети (ВКонтакте, Одноклассники, YouTube, Авито), 2ГИС, Яндекс Карты, адрес, часы.</li>
+    </ul>
+  </section>
+
+  <section id="booking">
+    <h2>Как клиент записывается</h2>
+    <p>Три шага и полминуты, без звонков и переписки.</p>
+    <ol>
+      <li><b>Услуга.</b> Если цена зависит от кузова — выбирает седан, кроссовер или внедорожник.</li>
+      <li><b>День и время.</b> Календарь на 14 дней, выходные помечены. Показано только свободное время с учётом длительности услуги и числа боксов.</li>
+      <li><b>Контакты.</b> Имя, телефон, машина (марка → модель → цвет кнопками), комментарий. Имя и телефон запоминаются.</li>
+    </ol>
+    <p>После записи — экран «Вы записаны!» с адресом и маршрутом, кнопка <b>«Напомнить в Telegram за 2 часа»</b>, запись видна в блоке «Ваши записи». Приложение можно добавить на экран телефона иконкой.</p>
+    <p class="note">Защита: один бокс нельзя занять дважды; на один номер — не больше 3 активных записей; с одного интернета — не больше 5 записей в час. Длинную услугу нельзя поставить так, чтобы она закончилась после закрытия.</p>
+  </section>
+
+  <section id="assistant">
+    <h2>Ассистент</h2>
+    <p>Чат на странице студии: подбирает время и предлагает кнопку «Записаться». Работает на правилах и понимает типовые фразы.</p>
+    <div class="tbl"><table>
+      <tr><th>Клиент пишет</th><th>Ассистент отвечает</th></tr>
+      <tr><td>«Хочу мойку завтра после 6»</td><td>Ближайшее свободное время после 18:00 и кнопки с соседними окнами</td></tr>
+      <tr><td>«Запиши на полировку на 15:00»</td><td>Свободно — или занято и ближайшие окна; если не успевает до закрытия — объясняет почему</td></tr>
+      <tr><td>«А на 16:30?»</td><td>Помнит услугу и день из прошлого сообщения</td></tr>
+      <tr><td>«Что входит в полировку?»</td><td>Этапы, плюсы, цена и время</td></tr>
+      <tr><td>«Сколько стоит комплекс?»</td><td>Цена, в том числе по кузову</td></tr>
+      <tr><td>«Где вы?», «До скольки работаете?»</td><td>Адрес, телефон, часы и выходные</td></tr>
+      <tr><td>«Хочу отменить»</td><td>Просит позвонить в студию</td></tr>
+    </table></div>
+    <p>Сложные разговоры не ведёт. Версию на нейросети можно подключить отдельно — нужен только API-ключ.</p>
+  </section>
+
+  <section id="owner">
+    <h2>Что получает владелец</h2>
+    <p>Кабинет по логину и паролю — та же ссылка студии + <code>admin.html</code> — и уведомления в Telegram.</p>
+    <ul>
+      <li><b>Записи по дням:</b> кто, на что, во сколько, телефон, машина; выручка и загрузка за день. Подтвердить, выполнена, отменить; запись вручную, если клиент позвонил.</li>
+      <li><b>Telegram:</b> каждая новая запись приходит сразу — услуга, время, имя, телефон, машина, кузов.</li>
+      <li><b>Всё меняет сам:</b> услуги, цены, длительность, часы, выходные, боксы, фото, «до/после», отзывы, рейтинг, мессенджеры, цвет.</li>
+      <li><b>Ссылка для клиентов:</b> кнопка «Копировать» — ставят в шапку ВК, Telegram-канала, 2ГИС и Яндекс Карт.</li>
+    </ul>
+  </section>
+
+  <section id="missing">
+    <h2>Чего пока нет</h2>
+    <p>Этого владельцу не обещаем; если спросит — «сейчас нет, можем добавить».</p>
+    <ul>
+      <li>Оплаты онлайн — клиент платит на месте.</li>
+      <li>СМС — напоминания только через Telegram.</li>
+      <li>Отмены записи клиентом по ссылке — отменяет владелец в кабинете.</li>
+      <li>Мастеров по отдельности — только боксы.</li>
+      <li>Длинной услуги «с ночёвкой» на следующий день.</li>
+    </ul>
+  </section>
+
+  <div class="part">Свой домен</div>
+
+  <section id="domain">
+    <h2>Зачем и какой выбрать</h2>
+    <p>Свой домен меняет ссылки с <code>barsick2009.github.io/tlab/</code> на что-то вроде <code>zapis-avto.ru/tlab/</code> — выглядит как сервис. Хостинг остаётся бесплатным (GitHub), платите только за имя.</p>
+    <ul>
+      <li>Короткое, на латинице, без цифр и букв, которые пишут по-разному (ж, щ, ц).</li>
+      <li>Понятно, о чём: запись, авто, мойка, детейлинг.</li>
+      <li>Зона <code>.ru</code> — самая привычная для клиентов в России.</li>
+    </ul>
+    <p>Варианты: <code>zapis-avto.ru</code>, <code>moika-online.ru</code>, <code>boxzapis.ru</code>, <code>detailing-zapis.ru</code>. Свободно ли имя — видно при поиске у регистратора.</p>
+    <p class="note">Цена: домен <code>.ru</code> — примерно 200–300 ₽ за первый год по акции и около 900 ₽ в год дальше (точная цена — на сайте при покупке). Хостинг, почта, SSL и конструктор от регистратора не нужны.</p>
+  </section>
+
+  <section id="buy">
+    <h2>Шаг 1. Купить домен на reg.ru</h2>
+    <p>Минут 15; домен оформляется на вас. Подойдёт и nic.ru, Beget, Timeweb — шаги почти те же.</p>
+    <ol>
+      <li>Откройте <a href="https://www.reg.ru" target="_blank" rel="noopener">reg.ru</a> и введите имя в поиск доменов, например <code>zapis-avto</code>.</li>
+      <li>Найдите строку с <code>.ru</code> — если свободна, «В корзину». Занята — попробуйте другое имя.</li>
+      <li>В корзине <b>снимите все дополнительные услуги</b> (хостинг, конструктор, почта, сертификат). Срок — 1 год, автопродление можно оставить.</li>
+      <li>Зарегистрируйтесь (почта + телефон) и заполните данные администратора домена как физлица: ФИО, паспорт, адрес. Для <code>.ru</code> это требование закона; в публичном доступе данные скрыты.</li>
+      <li>Оплатите картой или через СБП.</li>
+      <li>Подтвердите почту и телефон, если попросят. Домен появится в «Домены и услуги» в течение часа.</li>
+    </ol>
+  </section>
+
+  <section id="dns">
+    <h2>Шаг 2. Направить домен на сайт</h2>
+    <p>На reg.ru: «Домены и услуги» → ваш домен → <b>«DNS-серверы и управление зоной»</b>. Удалите старые записи типа A для <code>@</code> и добавьте эти:</p>
+    <div class="tbl"><table>
+      <tr><th>Тип</th><th>Имя</th><th>Значение</th></tr>
+      <tr><td>A</td><td>@</td><td class="mono">185.199.108.153<button class="copy" data-c="185.199.108.153">копир.</button></td></tr>
+      <tr><td>A</td><td>@</td><td class="mono">185.199.109.153<button class="copy" data-c="185.199.109.153">копир.</button></td></tr>
+      <tr><td>A</td><td>@</td><td class="mono">185.199.110.153<button class="copy" data-c="185.199.110.153">копир.</button></td></tr>
+      <tr><td>A</td><td>@</td><td class="mono">185.199.111.153<button class="copy" data-c="185.199.111.153">копир.</button></td></tr>
+      <tr><td>CNAME</td><td>www</td><td class="mono">barsick2009.github.io.<button class="copy" data-c="barsick2009.github.io.">копир.</button></td></tr>
+    </table></div>
+    <p>Изменения расходятся от 15 минут до нескольких часов. Адреса — из инструкции GitHub: <a href="https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site" target="_blank" rel="noopener">Managing a custom domain</a>.</p>
+    <p><b>Дальше в GitHub</b> (через час после DNS):</p>
+    <ol>
+      <li>github.com → репозиторий <b>Barsick2009.github.io</b> → <b>Settings</b> → <b>Pages</b>.</li>
+      <li>В поле <b>Custom domain</b> впишите домен (например, <code>zapis-avto.ru</code>) → <b>Save</b>. Должна появиться зелёная галочка.</li>
+      <li>Поставьте галочку <b>Enforce HTTPS</b> (может стать доступной через несколько часов, до суток). Без HTTPS не работает «Добавить на экран».</li>
+    </ol>
+  </section>
+
+  <section id="after">
+    <h2>Шаг 3. Что сделает Claude и как проверить</h2>
+    <p>После покупки напишите Claude домен — остальное он настроит:</p>
+    <ul class="check">
+      <li>Добавит в сайт файл <code>CNAME</code>, чтобы заливка не сбрасывала настройку GitHub.</li>
+      <li>Пересоберёт приложения под новый адрес: ссылки в таблице лидов, в сообщениях и в обзвоне.</li>
+      <li>Обновит ссылку «Кабинет» в Telegram-уведомлениях.</li>
+      <li>Вы заливаете сайт как обычно — командой deploy.ps1.</li>
+    </ul>
+    <p>Проверка: откройте с телефона без VPN <code>https://ваш-домен.ru/tlab/</code> — страница студии с замочком в адресной строке. Старые ссылки <code>barsick2009.github.io/…</code> сами перенаправят на новый домен.</p>
+    <p class="note">Студии, которая заплатит, можно сделать адрес на её собственном домене (например, <code>zapis.west-detail61.ru</code>) — отдельная платная опция.</p>
+  </section>
+</div>
+<script>
+document.querySelectorAll('.copy').forEach((b) => b.onclick = async () => {
+  try { await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'скопировано'; setTimeout(() => b.textContent = 'копир.', 1500); } catch {}
+});
+</script>
+</body>
+</html>
