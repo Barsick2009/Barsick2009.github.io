@@ -112,10 +112,10 @@ function card(l) {
     <div class="links">
       ${l.wa ? `<a class="btn" href="${esc(l.wa)}" target="_blank" rel="noopener">WhatsApp</a>` : ''}
       ${l.tg ? `<a class="btn" href="${esc(l.tg)}" target="_blank" rel="noopener">Telegram</a>` : ''}
-      <button class="btn" data-a="copyMsg" data-id="${l.id}">Скопировать сообщение</button>
       ${l.app ? `<a class="btn" href="${esc(l.app)}" target="_blank" rel="noopener">Их приложение</a>` : ''}
       ${l.gis ? `<a class="btn ghost" href="${esc(l.gis)}" target="_blank" rel="noopener">2ГИС</a>` : ''}
     </div>
+    ${['sold', 'no'].includes(l.status) ? '' : msgBlock(l)}
     <div class="acts">
       <button class="btn" data-a="noanswer" data-id="${l.id}">Не ответил</button>
       <button class="btn pri" data-a="toggle" data-id="${l.id}">${open ? 'Скрыть' : 'Ответил →'}</button>
@@ -134,6 +134,38 @@ function card(l) {
     <textarea class="notes" data-id="${l.id}" placeholder="Заметки: имя владельца, что сказал…">${esc(l.notes)}</textarea>
     <div class="foot"><span>Звонков: <b class="num">${l.attempts || 0}</b></span>${l.lastCall ? `<span>последний ${fmtWhen(l.lastCall)}</span>` : ''}${due}</div>
   </article>`;
+}
+
+// ---------- сообщения: шаблоны с названием и ссылкой студии ----------
+const MSG = {
+  first: (l) => `Здравствуйте! Я собрал для «${l.name}» приложение онлайн-записи — с вашими услугами, адресом и рейтингом из 2ГИС. Посмотрите, как выглядит: ${l.app}\n\nКлиент сам выбирает услугу и свободное время, а запись сразу прилетает вам в Telegram — даже когда вы в боксе и не можете взять трубку. Цены и фото меняете сами.\n\nЕсли интересно — расскажу подробнее. Если нет, просто не отвечайте, больше не побеспокою 🙂`,
+  remind: (l) => `Добрый день! Успели посмотреть приложение для «${l.name}»? ${l.app}\nПервый месяц можно попробовать бесплатно — если записи не пойдут, ничего не платите.`,
+  price: () => `Запуск — 3 500 ₽, дальше 790 ₽ в месяц: хостинг, обновления, правки по вашей просьбе. Первый месяц бесплатно. Если ок — подключу за день: дам вход в кабинет, где вы сами меняете цены, фото и часы работы.`,
+};
+// номер для WhatsApp: из ссылки wa.me, номера владельца или студии (только мобильные +7 9…)
+const waNumber = (l) => {
+  const from = (v) => { const d = String(v || '').replace(/\D/g, '').replace(/^8(?=\d{10}$)/, '7'); return /^79\d{9}$/.test(d) ? d : ''; };
+  return from((String(l.wa || '').match(/wa\.me\/(\d+)/) || [])[1]) || from(l.ownerPhone) || from(l.phone);
+};
+const sentAlready = (l) => !['new', 'noanswer', 'owner'].includes(l.status);
+function msgBlock(l) {
+  const wa = waNumber(l), first = !sentAlready(l);
+  const text = first ? MSG.first(l) : MSG.remind(l);
+  return `<div class="msg">
+    <div class="m-h">${first ? 'Написать вместо звонка' : 'Напомнить о себе'}</div>
+    <div class="row">
+      ${wa ? `<a class="btn pri" href="https://wa.me/${wa}?text=${encodeURIComponent(text)}" target="_blank" rel="noopener" data-a="${first ? 'waFirst' : 'waRemind'}" data-id="${l.id}">WhatsApp с текстом</a>` : ''}
+      <button class="btn" data-a="cpFirst" data-id="${l.id}">Скопировать первое</button>
+      <button class="btn" data-a="cpRemind" data-id="${l.id}">Скопировать напоминание</button>
+      <button class="btn ghost" data-a="cpPrice" data-id="${l.id}">Про цену</button>
+      ${l.tg ? `<a class="btn ghost" href="${esc(l.tg)}" target="_blank" rel="noopener">Открыть Telegram</a>` : ''}
+    </div>
+    <div class="small-note">${wa ? 'WhatsApp откроется с готовым текстом — нажмите «Отправить». ' : ''}Для Telegram и MAX: скопируйте, откройте чат, вставьте.</div>
+  </div>`;
+}
+async function markWritten(l, text) {
+  const extra = sentAlready(l) ? { nextCall: addDays(2) } : { status: 'sent', nextCall: addDays(2) };
+  return save(l.id, withLog(l, text, { ...extra, attempts: (l.attempts || 0) + 1 }), 'Отмечено: написал · напомню через 2 дня');
 }
 
 // ---------- выдача кабинета владельцу (после продажи) ----------
@@ -186,6 +218,11 @@ async function act(id, a) {
   const l = leads.find((x) => x.id === id); if (!l) return;
   if (a === 'copyPhone') return copy(l.phone, 'Номер скопирован');
   if (a === 'copyOwner') return copy(l.ownerPhone, 'Номер владельца скопирован');
+  if (a === 'cpFirst') { await copy(MSG.first(l), 'Первое сообщение скопировано — вставьте в чат'); return markWritten(l, 'написал (первое сообщение)'); }
+  if (a === 'cpRemind') { await copy(MSG.remind(l), 'Напоминание скопировано'); return markWritten(l, 'написал напоминание'); }
+  if (a === 'cpPrice') return copy(MSG.price(l), 'Текст про цену скопирован');
+  if (a === 'waFirst') { setTimeout(() => markWritten(l, 'написал в WhatsApp'), 400); return; }
+  if (a === 'waRemind') { setTimeout(() => markWritten(l, 'напомнил в WhatsApp'), 400); return; }
   if (a === 'issueOpen') { issueOpen = id; return render(); }
   if (a === 'issueClose') { issueOpen = null; return render(); }
   if (a === 'issue') return issueCabinet(l);
