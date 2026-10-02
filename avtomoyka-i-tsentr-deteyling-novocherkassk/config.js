@@ -8,14 +8,17 @@ window.APP_CONFIG = {
   "city": "Новочеркасск",
   "address": "улица Флерова, 34",
   "phone": "+7 960 444-55-69",
-  "about": "Мойка и детейлинг. Запишитесь онлайн — бокс будет ждать вас точно ко времени.",
+  "about": "Новочеркасск. Экспресс-мойка кузова, комплексная мойка, мойка двигателя, химчистка салона. Выберите услугу и удобное время — запишитесь онлайн за минуту.",
   "utc_offset": 180,
   "open_time": "10:00",
   "close_time": "22:00",
   "boxes": 2,
   "slot_step": 30,
   "accent": "#f97316",
-  "photos": [],
+  "photos": [
+   "photos/photo1.jpg",
+   "photos/photo2.jpg"
+  ],
   "socials": {
    "gis": "https://2gis.com/firm/70000001105825255"
   },
@@ -29,7 +32,7 @@ window.APP_CONFIG = {
  "services": [
   {
    "name": "Экспресс-мойка кузова",
-   "price": 700,
+   "price": 600,
    "duration_min": 30,
    "description": "Бесконтактная мойка, сушка",
    "id": "de7f41c6-da05-581f-8862-89fd083e84e0",
@@ -38,7 +41,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Комплексная мойка",
-   "price": 1500,
+   "price": 1300,
    "duration_min": 60,
    "description": "Кузов, коврики, пылесос салона, стёкла",
    "id": "cf29635f-51c7-54c6-8ed3-b09137cb5035",
@@ -47,7 +50,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Мойка двигателя",
-   "price": 1200,
+   "price": 1000,
    "duration_min": 40,
    "description": "Бережно, с консервацией",
    "id": "c3f262f7-da6b-57c7-86c8-bb9b02e037ab",
@@ -56,7 +59,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Химчистка салона",
-   "price": 9000,
+   "price": 8000,
    "duration_min": 300,
    "description": "Сиденья, потолок, ковролин, пластик",
    "id": "cceadb5b-bbba-555b-94e6-f968800c3291",
@@ -65,7 +68,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Полировка кузова",
-   "price": 12000,
+   "price": 10000,
    "duration_min": 360,
    "description": "Восстановительная, удаление царапин",
    "id": "0fff7ce8-2750-57de-ad34-2ef655f53ea2",
@@ -74,7 +77,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Керамическое покрытие",
-   "price": 25000,
+   "price": 20000,
    "duration_min": 480,
    "description": "Защита ЛКП до 2 лет",
    "id": "6d9adb8d-d20d-5855-8cd2-c4fc52f61504",
@@ -82,12 +85,21 @@ window.APP_CONFIG = {
    "prices": null
   },
   {
+   "name": "Полировка фар",
+   "price": 1500,
+   "duration_min": 60,
+   "description": "Возвращаем прозрачность",
+   "id": "5a9c5ae1-3aa8-5318-9ce7-4d52f2d8ed5a",
+   "sort": 6,
+   "prices": null
+  },
+  {
    "name": "Антидождь",
-   "price": 1000,
+   "price": 800,
    "duration_min": 30,
    "description": "Обработка всех стёкол",
    "id": "ae3229ec-8e8d-5ac3-aa33-7ec4b838143e",
-   "sort": 6,
+   "sort": 7,
    "prices": null
   }
  ]

@@ -8,7 +8,7 @@ window.APP_CONFIG = {
   "city": "Таганрог",
   "address": "",
   "phone": "+7 951 827-91-66",
-  "about": "Мойка и детейлинг. Запишитесь онлайн — бокс будет ждать вас точно ко времени.",
+  "about": "Таганрог. Экспресс-мойка кузова, комплексная мойка, мойка двигателя, химчистка салона. Выберите услугу и удобное время — запишитесь онлайн за минуту.",
   "utc_offset": 180,
   "open_time": "09:00",
   "close_time": "21:00",
@@ -29,7 +29,7 @@ window.APP_CONFIG = {
  "services": [
   {
    "name": "Экспресс-мойка кузова",
-   "price": 700,
+   "price": 600,
    "duration_min": 30,
    "description": "Бесконтактная мойка, сушка",
    "id": "67986f1b-2c28-5077-a767-907370ed9cb8",
@@ -38,7 +38,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Комплексная мойка",
-   "price": 1500,
+   "price": 1300,
    "duration_min": 60,
    "description": "Кузов, коврики, пылесос салона, стёкла",
    "id": "63934eb9-fa46-5444-b7a7-17c7ede39a87",
@@ -47,7 +47,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Мойка двигателя",
-   "price": 1200,
+   "price": 1000,
    "duration_min": 40,
    "description": "Бережно, с консервацией",
    "id": "74c3310a-683d-50d4-af7a-8c55586fb77b",
@@ -56,7 +56,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Химчистка салона",
-   "price": 9000,
+   "price": 8000,
    "duration_min": 300,
    "description": "Сиденья, потолок, ковролин, пластик",
    "id": "456c5112-9ea7-5186-b427-d80f6a90d8d6",
@@ -65,7 +65,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Полировка кузова",
-   "price": 12000,
+   "price": 10000,
    "duration_min": 360,
    "description": "Восстановительная, удаление царапин",
    "id": "45f0cd0d-cd3a-52d2-a11a-52035e3aed61",
@@ -74,7 +74,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Керамическое покрытие",
-   "price": 25000,
+   "price": 20000,
    "duration_min": 480,
    "description": "Защита ЛКП до 2 лет",
    "id": "5a39801c-375e-592f-8fac-c4ee3ae78e3f",
@@ -82,12 +82,21 @@ window.APP_CONFIG = {
    "prices": null
   },
   {
+   "name": "Полировка фар",
+   "price": 1500,
+   "duration_min": 60,
+   "description": "Возвращаем прозрачность",
+   "id": "8ee530b9-3b23-5bdc-a9ee-3ae3a43ad303",
+   "sort": 6,
+   "prices": null
+  },
+  {
    "name": "Антидождь",
-   "price": 1000,
+   "price": 800,
    "duration_min": 30,
    "description": "Обработка всех стёкол",
    "id": "a9ed2af7-2bc8-58b6-934f-705b4419ca2a",
-   "sort": 6,
+   "sort": 7,
    "prices": null
   }
  ]

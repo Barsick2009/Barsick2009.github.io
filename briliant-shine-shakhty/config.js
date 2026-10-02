@@ -8,14 +8,16 @@ window.APP_CONFIG = {
   "city": "Шахты",
   "address": "улица Маяковского, 81",
   "phone": "+7 929 801-80-82",
-  "about": "Мойка и детейлинг. Запишитесь онлайн — бокс будет ждать вас точно ко времени.",
+  "about": "Шахты. Экспресс-мойка кузова, комплексная мойка, мойка двигателя, химчистка салона. Выберите услугу и удобное время — запишитесь онлайн за минуту.",
   "utc_offset": 180,
   "open_time": "08:00",
   "close_time": "18:00",
   "boxes": 2,
   "slot_step": 30,
   "accent": "#10b981",
-  "photos": [],
+  "photos": [
+   "photos/photo1.jpg"
+  ],
   "socials": {
    "gis": "https://2gis.com/firm/70000001045341329"
   },
@@ -29,7 +31,7 @@ window.APP_CONFIG = {
  "services": [
   {
    "name": "Экспресс-мойка кузова",
-   "price": 700,
+   "price": 600,
    "duration_min": 30,
    "description": "Бесконтактная мойка, сушка",
    "id": "67851628-30d5-5ff1-a06b-f717959d30df",
@@ -38,7 +40,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Комплексная мойка",
-   "price": 1500,
+   "price": 1300,
    "duration_min": 60,
    "description": "Кузов, коврики, пылесос салона, стёкла",
    "id": "d9328ab7-06c7-5b64-8576-202e44cde8a8",
@@ -47,7 +49,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Мойка двигателя",
-   "price": 1200,
+   "price": 1000,
    "duration_min": 40,
    "description": "Бережно, с консервацией",
    "id": "46259670-3904-551e-a578-7c268a91ce83",
@@ -56,7 +58,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Химчистка салона",
-   "price": 9000,
+   "price": 8000,
    "duration_min": 300,
    "description": "Сиденья, потолок, ковролин, пластик",
    "id": "28f50acf-efad-54cc-b1b3-e0c314df1747",
@@ -65,7 +67,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Полировка кузова",
-   "price": 12000,
+   "price": 10000,
    "duration_min": 360,
    "description": "Восстановительная, удаление царапин",
    "id": "59f7c6c0-17b4-5311-a5e5-8baa9d99bba3",
@@ -74,7 +76,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Керамическое покрытие",
-   "price": 25000,
+   "price": 20000,
    "duration_min": 480,
    "description": "Защита ЛКП до 2 лет",
    "id": "6e60d1d9-c3a3-5f1d-a780-09411f7b2411",
@@ -82,12 +84,21 @@ window.APP_CONFIG = {
    "prices": null
   },
   {
+   "name": "Полировка фар",
+   "price": 1500,
+   "duration_min": 60,
+   "description": "Возвращаем прозрачность",
+   "id": "4391ba8d-eab9-5ad9-9193-a441f4545a10",
+   "sort": 6,
+   "prices": null
+  },
+  {
    "name": "Антидождь",
-   "price": 1000,
+   "price": 800,
    "duration_min": 30,
    "description": "Обработка всех стёкол",
    "id": "a95c56fd-f3e0-5d89-b1a0-8c14b15848c0",
-   "sort": 6,
+   "sort": 7,
    "prices": null
   }
  ]

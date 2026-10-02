@@ -8,7 +8,7 @@ window.APP_CONFIG = {
   "city": "Шахты",
   "address": "Артёмовский переулок, 73",
   "phone": "+7 908 177-97-87",
-  "about": "Мойка и детейлинг. Запишитесь онлайн — бокс будет ждать вас точно ко времени.",
+  "about": "Шахты. Экспресс-мойка кузова, комплексная мойка, мойка двигателя, химчистка салона. Выберите услугу и удобное время — запишитесь онлайн за минуту.",
   "utc_offset": 180,
   "open_time": "09:00",
   "close_time": "22:00",
@@ -29,7 +29,7 @@ window.APP_CONFIG = {
  "services": [
   {
    "name": "Экспресс-мойка кузова",
-   "price": 700,
+   "price": 600,
    "duration_min": 30,
    "description": "Бесконтактная мойка, сушка",
    "id": "c3e48419-4d79-554e-96c3-d9ce9719be7a",
@@ -38,7 +38,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Комплексная мойка",
-   "price": 1500,
+   "price": 1300,
    "duration_min": 60,
    "description": "Кузов, коврики, пылесос салона, стёкла",
    "id": "62fbda0f-db79-5f3a-b5cb-25d61953f2c0",
@@ -47,7 +47,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Мойка двигателя",
-   "price": 1200,
+   "price": 1000,
    "duration_min": 40,
    "description": "Бережно, с консервацией",
    "id": "10541d87-1820-514f-b8f9-2efbf81b9bab",
@@ -56,7 +56,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Химчистка салона",
-   "price": 9000,
+   "price": 8000,
    "duration_min": 300,
    "description": "Сиденья, потолок, ковролин, пластик",
    "id": "c274753c-4a0d-5b87-97a2-7444bc58b9cb",
@@ -65,7 +65,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Полировка кузова",
-   "price": 12000,
+   "price": 10000,
    "duration_min": 360,
    "description": "Восстановительная, удаление царапин",
    "id": "1af69d14-256e-5e94-9fc3-2e54d5a3d9d5",
@@ -74,7 +74,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Керамическое покрытие",
-   "price": 25000,
+   "price": 20000,
    "duration_min": 480,
    "description": "Защита ЛКП до 2 лет",
    "id": "2ee286cf-c9fe-59de-a232-12abd170b382",
@@ -82,12 +82,21 @@ window.APP_CONFIG = {
    "prices": null
   },
   {
+   "name": "Полировка фар",
+   "price": 1500,
+   "duration_min": 60,
+   "description": "Возвращаем прозрачность",
+   "id": "d318e560-6baa-5c2f-a08e-018a13eee12d",
+   "sort": 6,
+   "prices": null
+  },
+  {
    "name": "Антидождь",
-   "price": 1000,
+   "price": 800,
    "duration_min": 30,
    "description": "Обработка всех стёкол",
    "id": "4eec161d-e2a7-57f4-b04a-06d0740558a4",
-   "sort": 6,
+   "sort": 7,
    "prices": null
   }
  ]

@@ -8,14 +8,20 @@ window.APP_CONFIG = {
   "city": "Таганрог",
   "address": "Николаевское шоссе, 6а",
   "phone": "+7 988 552-72-42",
-  "about": "Мойка и детейлинг. Запишитесь онлайн — бокс будет ждать вас точно ко времени.",
+  "about": "Таганрог. Экспресс-мойка кузова, комплексная мойка, мойка двигателя, химчистка салона. Выберите услугу и удобное время — запишитесь онлайн за минуту.",
   "utc_offset": 180,
   "open_time": "09:00",
   "close_time": "19:00",
   "boxes": 2,
   "slot_step": 30,
   "accent": "#10b981",
-  "photos": [],
+  "photos": [
+   "photos/photo1.jpg",
+   "photos/photo2.jpg",
+   "photos/photo3.jpg",
+   "photos/photo4.jpg",
+   "photos/photo5.jpg"
+  ],
   "socials": {
    "telegram": "https://t.me/+79885527242",
    "whatsapp": "https://wa.me/79885527242",
@@ -26,7 +32,13 @@ window.APP_CONFIG = {
    7
   ],
   "live": false,
-  "reviews": [],
+  "reviews": [
+   {
+    "name": "Igor Olegovich",
+    "src": "2ГИС",
+    "text": "Самая лучшая автомойка в городе , цена качество , нет слов . Мою машину у этом месте не первый раз , всем советую это автомойку , всем добра !"
+   }
+  ],
   "rating": {
    "value": 5.0,
    "count": 3,
@@ -38,7 +50,7 @@ window.APP_CONFIG = {
  "services": [
   {
    "name": "Экспресс-мойка кузова",
-   "price": 700,
+   "price": 600,
    "duration_min": 30,
    "description": "Бесконтактная мойка, сушка",
    "id": "75d289ff-0f5f-58b0-b730-b6d7f4cd8355",
@@ -47,7 +59,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Комплексная мойка",
-   "price": 1500,
+   "price": 1300,
    "duration_min": 60,
    "description": "Кузов, коврики, пылесос салона, стёкла",
    "id": "a6bcaac7-70f2-57e2-8fea-b2ab7526ec85",
@@ -56,7 +68,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Мойка двигателя",
-   "price": 1200,
+   "price": 1000,
    "duration_min": 40,
    "description": "Бережно, с консервацией",
    "id": "e2b1393e-83e9-5b68-b1b4-edd85d95d353",
@@ -65,7 +77,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Химчистка салона",
-   "price": 9000,
+   "price": 8000,
    "duration_min": 300,
    "description": "Сиденья, потолок, ковролин, пластик",
    "id": "838fea4f-490d-5568-b555-fb595e096c9c",
@@ -74,7 +86,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Полировка кузова",
-   "price": 12000,
+   "price": 10000,
    "duration_min": 360,
    "description": "Восстановительная, удаление царапин",
    "id": "c4b8dbaf-13f6-5a31-bbf6-d429523ea7bf",
@@ -83,7 +95,7 @@ window.APP_CONFIG = {
   },
   {
    "name": "Керамическое покрытие",
-   "price": 25000,
+   "price": 20000,
    "duration_min": 480,
    "description": "Защита ЛКП до 2 лет",
    "id": "f17cc2b3-83e7-5f7b-ae82-2c55b90e3cbd",
@@ -91,12 +103,21 @@ window.APP_CONFIG = {
    "prices": null
   },
   {
+   "name": "Полировка фар",
+   "price": 1500,
+   "duration_min": 60,
+   "description": "Возвращаем прозрачность",
+   "id": "26c0de32-7f6a-57cb-a8e6-0fc46b116ae2",
+   "sort": 6,
+   "prices": null
+  },
+  {
    "name": "Антидождь",
-   "price": 1000,
+   "price": 800,
    "duration_min": 30,
    "description": "Обработка всех стёкол",
    "id": "7cc3dc9e-7bc6-51e9-b26c-a367f3d552f7",
-   "sort": 6,
+   "sort": 7,
    "prices": null
   }
  ]
